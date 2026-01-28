@@ -1,0 +1,59 @@
+client_01:
+  display_name: "Snowman UK"
+  defaults:
+    service: "T24"
+    weight_kg: 1.0
+    country: "UNITED KINGDOM"
+  services:
+    - name: "T24"
+      code: ""
+      trigger:
+        type: "default"
+    - name: "SD"
+      code: ""
+      trigger:
+        type: "tag"
+        tag: "SD"
+  clickdrop:
+    template_path: "D:\\LabelOps\\assets\\ClickDrop_import_template_no_header.xlsx"
+    column_mapping:
+      full_name: 1
+      address_line_1: 2
+      address_line_2: 3
+      town_city: 4
+      county: 5
+      postcode: 6
+      country: 7
+      service: 8
+      weight_kg: 9
+      reference: 10
+  folders:
+    in_txt: "D:\\LabelOps\\Clients\\client_01\\IN_TXT"
+    ready_xlsx: "D:\\LabelOps\\Clients\\client_01\\READY_XLSX"
+    archive: "D:\\LabelOps\\Clients\\client_01\\ARCHIVE"
+    tracking_out: "D:\\LabelOps\\Clients\\client_01\\TRACKING_OUT"
+
+client_02:
+  display_name: "Client 02"
+  defaults:
+    service: "T24"
+    weight_kg: 2.0
+    country: "UNITED KINGDOM"
+  services:
+    - name: "T24"
+      trigger: { type: "default" }
+    - name: "SD"
+      trigger: { type: "tag", tag: "SD" }
+  clickdrop:
+    template_path: "D:\\LabelOps\\assets\\ClickDrop_import_template_no_header.xlsx"
+    column_mapping:
+      full_name: 1
+      address_line_1: 2
+      address_line_2: 3
+      town_city: 4
+      county: 5
+      postcode: 6
+      country: 7
+      service: 8
+      weight_kg: 9
+      reference: 10
