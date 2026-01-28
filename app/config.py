@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import re
+from pathlib import Path
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
@@ -59,13 +60,48 @@ class ClientConfig:
     folders: Dict[str, str]
 
 
-def load_config(path: str = DEFAULT_CONFIG_PATH) -> Dict[str, Any]:
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[1]
+
+
+def _default_config_path() -> str:
+    env_path = os.getenv("LABELOPS_CONFIG_PATH")
+    if env_path:
+        return env_path
+
+    if os.path.exists(DEFAULT_CONFIG_PATH):
+        return DEFAULT_CONFIG_PATH
+
+    local_config = _repo_root() / "config" / "clients.local.yaml"
+    if local_config.exists():
+        return str(local_config)
+
+    repo_config = _repo_root() / "config" / "clients.yaml"
+    if repo_config.exists():
+        return str(repo_config)
+
+    return DEFAULT_CONFIG_PATH
+
+
+def _default_clients_root() -> str:
+    env_root = os.getenv("LABELOPS_CLIENTS_ROOT")
+    if env_root:
+        return env_root
+
+    if os.path.exists(DEFAULT_CLIENTS_ROOT):
+        return DEFAULT_CLIENTS_ROOT
+
+    return str(_repo_root() / "runtime" / "clients")
+
+
+def load_config(path: str | None = None) -> Dict[str, Any]:
     """Load the YAML config file."""
+    resolved_path = path or _default_config_path()
 
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"Config file not found: {path}")
+    if not os.path.exists(resolved_path):
+        raise FileNotFoundError(f"Config file not found: {resolved_path}")
 
-    with open(path, "r", encoding="utf-8") as handle:
+    with open(resolved_path, "r", encoding="utf-8") as handle:
         data = yaml.safe_load(handle) or {}
 
     if not isinstance(data, dict):
@@ -177,7 +213,7 @@ def _is_windows_absolute(path: str) -> bool:
 def _resolve_folder_path(
     client_id: str, folder_value: Optional[str], default_suffix: str
 ) -> str:
-    base_path = os.path.join(DEFAULT_CLIENTS_ROOT, client_id)
+    base_path = os.path.join(_default_clients_root(), client_id)
     default_path = os.path.join(base_path, default_suffix)
     if not folder_value:
         return default_path

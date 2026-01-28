@@ -132,7 +132,16 @@ def _now_timestamp() -> str:
 
 
 def _default_log_dir() -> str:
-    return os.getenv("LABELOPS_LOG_DIR", r"D:\LabelOps\Logs")
+    env_path = os.getenv("LABELOPS_LOG_DIR")
+    if env_path:
+        return env_path
+
+    default_path = r"D:\LabelOps\Logs"
+    if os.path.exists(default_path):
+        return default_path
+
+    repo_logs = Path(__file__).resolve().parents[1] / "runtime" / "logs"
+    return str(repo_logs)
 
 
 def _resolve_template_path(client_settings: dict) -> str:
