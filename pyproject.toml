@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "labelops"
+version = "0.1.0"
+description = "LabelOps tooling for packaging and automation."
+requires-python = ">=3.10"
+license = { text = "Proprietary" }
+
+dependencies = [
+  "PySide6",
+  "openpyxl",
+  "pyyaml",
+  "watchdog",
+  "python-telegram-bot",
+]
+
+[project.optional-dependencies]
+openai = ["openai"]
