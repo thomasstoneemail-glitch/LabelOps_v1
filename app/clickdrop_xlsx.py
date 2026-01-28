@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from pathlib import Path
 from typing import Any, Dict, Iterable
 
@@ -40,6 +41,18 @@ DEFAULTS: Dict[str, Any] = {
     "country": "UNITED KINGDOM",
     "reference_prefix": None,
 }
+
+
+def _default_template_path() -> str:
+    env_path = os.getenv("LABELOPS_TEMPLATE_PATH")
+    if env_path:
+        return env_path
+
+    repo_template = Path(__file__).resolve().parents[1] / "assets" / "ClickDrop_import_template_no_header.xlsx"
+    if repo_template.exists():
+        return str(repo_template)
+
+    return r"D:\LabelOps\assets\ClickDrop_import_template_no_header.xlsx"
 
 
 def _normalize_text(value: Any, *, uppercase: bool = False) -> str:
@@ -118,7 +131,7 @@ def _apply_reference_prefix(records: list[dict], reference_prefix: str | None) -
 def generate_clickdrop_xlsx(
     records: list[dict],
     out_path: str,
-    template_path: str = r"D:\LabelOps\assets\ClickDrop_import_template_no_header.xlsx",
+    template_path: str = _default_template_path(),
     *,
     defaults: dict | None = None,
 ) -> str:
